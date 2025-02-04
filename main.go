@@ -1,6 +1,44 @@
 package main
-import "fmt";
+
+import (
+	"crypto/sha256"
+	"fmt"
+)
+
+type block struct {
+	data     string
+	hash     string
+	prevHash string
+}
+
+type blockchain struct {
+	blocks []block
+}
+
+func (b *blockchain) getLastHash() string {
+	if len(b.blocks) > 0 {
+		return b.blocks[len(b.blocks)-1].hash
+	}
+	return ""
+}
+
+func (b *blockchain) addBlock(data string) {
+	newBlock := block{data, "", b.getLastHash()}
+	hash := sha256.Sum256([]byte(newBlock.data + newBlock.prevHash))
+	newBlock.hash = fmt.Sprintf("%x", hash)
+	b.blocks = append(b.blocks, newBlock)
+}
+
+func (b *blockchain) listBlocks() {
+	for _, block := range b.blocks {
+		fmt.Printf("Data : %s\n, Hash : %s\n, PrevHash : %s\n", block.data, block.hash, block.prevHash)
+	}
+}
 
 func main() {
-	fmt.Println("hello world");
+	chain := blockchain{}
+	chain.addBlock("1")
+	chain.addBlock("2")
+	chain.addBlock("3")
+	chain.listBlocks()
 }
