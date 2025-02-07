@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/CodyKat/blockchain_practice/utils"
 )
 
 const port string = ":4000"
@@ -26,9 +24,11 @@ func documentation(rw http.ResponseWriter, r *http.Request) {
 		},
 	}
 	rw.Header().Add("Content-type", "Application/json")
-	b, err := json.Marshal(data)
-	utils.HandleErr(err)
-	fmt.Fprintf(rw, "%s", b)
+	// same as below 3 lines
+	json.NewEncoder(rw).Encode(data)
+	// b, err := json.Marshal(data)
+	// utils.HandleErr(err)
+	// fmt.Fprintf(rw, "%s", b)
 }
 
 func main() {
