@@ -1,49 +1,38 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 
-	"github.com/CodyKat/blockchain_practice/blockchain"
+	"github.com/CodyKat/blockchain_practice/utils"
 )
 
-type homeData struct {
-	PageTitle string
-	Blocks    []*blockchain.Block
+const port string = ":4000"
+
+type URLDescription struct {
+	URL         string
+	Method      string
+	Description string
 }
 
-func home(rw http.ResponseWriter, r *http.Request) {
-	data := homeData{"Home", blockchain.GetBlockChain().AllBlocks()}
-	templates.ExecuteTemplate(rw, "home", data)
-}
-
-func add(rw http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		templates.ExecuteTemplate(rw, "add", "Add Page")
-	case "POST":
-		r.ParseForm()
-		data := r.Form.Get("blockdata")
-		blockchain.GetBlockChain().AddBlock(data)
-		http.Redirect(rw, r, "/", http.StatusPermanentRedirect)
+func documentation(rw http.ResponseWriter, r *http.Request) {
+	data := []URLDescription{
+		{
+			URL:         "/",
+			Method:      "GET",
+			Description: "See Description",
+		},
 	}
-
+	rw.Header().Add("Content-type", "Application/json")
+	b, err := json.Marshal(data)
+	utils.HandleErr(err)
+	fmt.Fprintf(rw, "%s", b)
 }
-
-const (
-	port        string = ":4000"
-	templateDir string = "templates/"
-)
-
-var templates *template.Template
 
 func main() {
-	templates = template.Must(template.ParseGlob(templateDir + "pages/*.html"))
-	templates = template.Must(templates.ParseGlob(templateDir + "partials/*.html"))
-	http.HandleFunc("/", home)
-	http.HandleFunc("/add", add)
-	fmt.Printf("i'm listening http://localhost%s\n", port)
+	http.HandleFunc("/", documentation)
+	fmt.Printf("Listening on http://localhost%s\n", port)
 	log.Fatal(http.ListenAndServe(port, nil))
 }
