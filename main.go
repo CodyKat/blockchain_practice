@@ -1,7 +1,7 @@
 package main
 
-import "github.com/CodyKat/blockchain_practice/cli"
+import "github.com/CodyKat/blockchain_practice/blockchain"
 
 func main() {
-	cli.Start()
+	blockchain.GetBlockChain()
 }
