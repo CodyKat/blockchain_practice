@@ -3,6 +3,7 @@ package cli
 import (
 	"flag"
 	"fmt"
+	"runtime"
 
 	"github.com/CodyKat/blockchain_practice/explorer"
 	"github.com/CodyKat/blockchain_practice/rest"
@@ -13,6 +14,7 @@ func usage() {
 	fmt.Println("Please use the following flags :")
 	fmt.Println("-port: 	Set the PORT of the server")
 	fmt.Println("=mode: 	Start the REST API")
+	runtime.Goexit()
 }
 
 func Start() {
